@@ -1,0 +1,48 @@
+// Get next copy over if appropriate
+                if (k+1 < BATCH_SIZE){
+                    
+                    if ((k+1) % 2 == 0){
+                        //printf("copying H2D Array 0\n");
+                        cudaMemcpyAsync(d_a0, A[k+1], size_a, cudaMemcpyHostToDevice, stream[0]);
+                        cudaMemcpyAsync(d_b0, B[k+1], size_b, cudaMemcpyHostToDevice, stream[0]);
+                    }
+                    else {
+                        
+                        //printf("copying H2D Array 1\n");
+                        cudaMemcpyAsync(d_a1, A[k+1], size_a, cudaMemcpyHostToDevice, stream[1]);
+                        cudaMemcpyAsync(d_b1, B[k+1], size_b, cudaMemcpyHostToDevice, stream[1]);
+                    }
+                }
+
+            if ((k) % 2 == 0){
+                    //printf("Kernel Array 0\n");
+                    matrixMul <<<numBlocks, numThreads, 0, stream[0]>>>(d_a0, d_b0, d_c0, M, N, K);
+                    //printf("D2H Array 0\n");
+                    cudaMemcpyAsync(C[k], d_c0, size_c, cudaMemcpyDeviceToHost, stream[0]);
+                    
+                }
+            else {
+                    //printf("Kernel Array 1\n");
+                    matrixMul <<<numBlocks, numThreads, 0, stream[1] >>>(d_a1, d_b1, d_c1, M, N, K);
+                    //printf("D2H Array 1\n");
+                    cudaMemcpyAsync(C[k], d_c1, size_c, cudaMemcpyDeviceToHost, stream[1]);
+                   
+            }
+
+
+printf("Using STREAMS:\n");
+        for (unsigned int k=0; k<BATCH_SIZE; k++){
+            
+            idx = k%2;
+            // Get next copy over if appropriate
+                if (k != 0){
+                        cudaMemcpyAsync(d_a[idx], A[k], size_a, cudaMemcpyHostToDevice, stream[idx]);
+                        cudaMemcpyAsync(d_b[idx], B[k], size_b, cudaMemcpyHostToDevice, stream[idx]);
+                }
+
+                matrixMul <<<numBlocks, numThreads, 0, stream[idx]>>>(d_a[idx], d_b[idx], d_c[idx], M, N, K);
+                    //printf("D2H Array 0\n");
+                cudaMemcpyAsync(C[k], d_c[idx], size_c, cudaMemcpyDeviceToHost, stream[idx]);
+                    
+    
+        }

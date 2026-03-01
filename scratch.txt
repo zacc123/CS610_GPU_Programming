@@ -1,0 +1,84 @@
+// // D2
+        printf("D2: ");
+        for (unsigned int i = 0; i<Nxp; i++){
+            printf("\n[");
+            for (unsigned int j = 0; j < Nxp; j++){
+                printf("%.2f ", D2[i * Nxp + j]);
+
+            }
+            printf("]");
+        }
+
+        printf("\n\n");
+
+        printf("HI: ");
+        for (unsigned int i = 0; i<Nxp; i++){
+            printf("\n[");
+            for (unsigned int j = 0; j < Nxp; j++){
+                printf("%.2f ", HI[i * Nxp + j]);
+
+            }
+            printf("]");
+        }
+
+        printf("\n\n");
+
+
+        printf("H: ");
+        for (unsigned int i = 0; i<Nxp; i++){
+            printf("\n[");
+            for (unsigned int j = 0; j < Nxp; j++){
+                printf("%.2f ", H[i * Nxp + j]);
+
+            }
+            printf("]");
+        }
+
+        printf("\n\n");
+
+        printf("BS: ");
+        for (unsigned int i = 0; i<Nxp; i++){
+            printf("\n[");
+            for (unsigned int j = 0; j < Nxp; j++){
+                printf("%.2f ", BS[i * Nxp + j]);
+
+            }
+            printf("]");
+        }
+
+        printf("\n\n");
+
+        printf("D1: ");
+        for (unsigned int i = 0; i<Nxp; i++){
+            printf("\n[");
+            for (unsigned int j = 0; j < Nxp; j++){
+                printf("%.2f ", D1[i * Nxp + j]);
+
+            }
+            printf("]");
+        }
+
+        printf("\n\n");
+        
+        printf("SAT: ");
+        for (unsigned int i = 0; i<Nxp; i++){
+            printf("\n[");
+            for (unsigned int j = 0; j < Nxp; j++){
+                printf("%.2f ", SAT[i * Nxp + j]);
+
+            }
+            printf("]");
+        }
+
+        printf("\n\n");
+
+        printf("data: ");
+        printf("\n[");
+        for (unsigned int i = 0; i<Nxp; i++){
+            
+            printf("%.2f\n ", g[i]);
+            
+        }
+        printf("]");
+
+        printf("\n\n");

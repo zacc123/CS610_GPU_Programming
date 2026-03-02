@@ -17,19 +17,22 @@ int main(void){
     double mu = 1.0;
     unsigned int Nx;
     unsigned int Nxp;
-    unsigned int Nxs[6] = {10, 20, 40, 80, 160, 320};
+    unsigned int Nxs[6] = {11, 20, 40, 80, 160, 320};
+    //unsigned int Nxs[6] = {10, 10, 10, 10, 160, 320};
     double errors[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     for (unsigned int j = 0; j < 6; j++ ){
-        Nx = Nxs[j];
-        Nxp = Nx + 1;
-        // Create Domain
-        float *x = create_1D_domain(x0, xN, Nx);
-        double*D1, *H, *HI;
-        double *D2, *SAT;
-        double *BS;
-        create_1D_D1_operator_dense(&D1, &H, &HI, Nx, p, x0, xN);
-        create_1D_D2_operator_dense(&D2, &BS, Nx, p, x0, xN);
-        addSAT_dir(&SAT, BS, Nx, HI, mu);
+         Nx = Nxs[j];
+         Nxp = Nx + 1;
+         // Create Domain
+         float *x = create_1D_domain(x0, xN, Nx);
+         double*D1, *H, *HI;
+         double *D2, *SAT;
+         double *BS;
+         create_1D_D1_operator_dense(&D1, &H, &HI, Nx, p, x0, xN);
+         create_1D_D2_operator_dense(&D2, &BS, Nx, p, x0, xN);
+         addSAT_dir(&SAT, BS, Nx, HI, mu);
+         matrixAddDenseIP(D2, SAT, Nxp, Nxp);
+
 
         double *s = (double *)calloc((Nx + 1), sizeof(double));
         double *u = (double *)calloc((Nx + 1), sizeof(double));
@@ -44,46 +47,7 @@ int main(void){
         source(s, x, t, Nxp);
 
         vectorSubIP(b, s, Nxp);
-        // Make everything PSD
        
-        matrixAddDenseIP(D2, SAT, Nxp, Nxp);
-        
-        // // Check Arrays for Sanity:
-        // printf("B: ");
-        // printf("\n[");
-        // for (unsigned int i = 0; i<Nxp; i++){
-            
-        //     printf("%.2f\n ", b[i]);
-            
-        // }
-        // printf("]");
-
-
-        // printf("\n\n");
-
-        // printf("data: ");
-        // printf("\n[");
-        // for (unsigned int i = 0; i<Nxp; i++){
-            
-        //     printf("%.2f\n ", g[i]);
-            
-        // }
-        // printf("]");
-
-        // printf("\n\n");
-
-        // printf("source: ");
-        // printf("\n[");
-        // for (unsigned int i = 0; i<Nxp; i++){
-            
-        //     printf("%.2f\n ", s[i]);
-            
-        // }
-        // printf("]");
-
-        // printf("\n\n");
-        
-
         matrixTranspose(D2, D2_t, Nxp, Nxp);
         matrixMulDense(D2_t, D2, D2_spd, Nxp, Nxp, Nxp);
 
@@ -112,13 +76,37 @@ int main(void){
         free(s); free(g);
         free(SAT);
         free(D2_t); free(D2_spd); free(b_spd);
+
+      // sparse section
+      // x = create_1D_domain(x0, xN, Nx);
+      
+      // double *D1_v; 
+      // unsigned int *D1_row, *D1_col;
+      // unsigned int *D1_nnz;
+
+        
+      // double *H_v;
+      // unsigned int *H_row, *H_col;
+
+      // double *HI_v;
+      // unsigned int *HI_row, *HI_col;
+      
+      // unsigned int H_nnz = Nxp;
+      // unsigned int HI_nnz = Nxp;
+
+
+      // free_1D_domain(&x);
+      // free(D1_v); free(D1_row); free(D1_col);
+      // free(H_v); free(H_row); free(H_col);
+      // free(HI_v); free(HI_row); free(HI_col);
+
      }
 
      printf("|Error Rate:\n");
      printf("|Error:\t|Log Error\t|\n");
      for (unsigned int i = 1; i < 6; i++){
 
-        printf("| %.8f \t| %.8f\t|\n", errors[i-1]/errors[i], log2(errors[i-1]/errors[i]));
+        printf("| %.12f \t| %.12f \t| %.8f \t| %.8f\t|\n",errors[i-1], errors[i], errors[i-1]/errors[i], log2(errors[i-1]/errors[i]));
      }
 
 

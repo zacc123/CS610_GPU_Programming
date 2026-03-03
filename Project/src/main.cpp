@@ -78,28 +78,52 @@ int main(void){
         free(D2_t); free(D2_spd); free(b_spd);
 
       // sparse section
-      // x = create_1D_domain(x0, xN, Nx);
+      x = create_1D_domain(x0, xN, Nx);
       
-      // double *D1_v; 
-      // unsigned int *D1_row, *D1_col;
-      // unsigned int *D1_nnz;
-
+      SparseMatrixCOO *D1_sparse;
+      SparseMatrixCOO *H_sparse;
+      SparseMatrixCOO *HI_sparse;
+      SparseMatrixCOO *D2_sparse;
+      SparseMatrixCOO *BS_sparse;
         
-      // double *H_v;
-      // unsigned int *H_row, *H_col;
+      create_1D_D1_operator_sparse(&D1_sparse, &H_sparse, &HI_sparse, Nx,  p, x0,  xN);
+      create_1D_D2_operator_sparse(&D2_sparse, &BS_sparse, Nx, p,  x0,  xN);
 
-      // double *HI_v;
-      // unsigned int *HI_row, *HI_col;
+      printf("H: NNz = %u\n", H_sparse->nnz);
+      for (unsigned int i = 0; i < H_sparse->nnz; i++){
+         printf("At idx: [%u %u] H = %.5f\n", H_sparse->row_indices[i], H_sparse->col_indices[i], H_sparse->values[i]);
+      }
+
+      printf("HI: NNz = %u\n", HI_sparse->nnz);
+      for (unsigned int i = 0; i < HI_sparse->nnz; i++){
+         printf("At idx: [%u %u] H = %.5f\n", HI_sparse->row_indices[i], HI_sparse->col_indices[i], HI_sparse->values[i]);
+      }
+
+      printf("D1: NNz = %u\n", D1_sparse->nnz);
+      for (unsigned int i = 0; i < D1_sparse->nnz; i++){
+         printf("At idx: [%u %u] D1 = %.5f\n", D1_sparse->row_indices[i], D1_sparse->col_indices[i], D1_sparse->values[i]);
+      }
+
+      printf("D2: NNz = %u\n", D2_sparse->nnz);
+      for (unsigned int i = 0; i < D2_sparse->nnz; i++){
+         printf("At idx: [%u %u] D2 = %.5f\n", D2_sparse->row_indices[i], D2_sparse->col_indices[i], D2_sparse->values[i]);
+      }
+
+      printf("BS: NNz = %u\n", BS_sparse->nnz);
+      for (unsigned int i = 0; i < BS_sparse->nnz; i++){
+         printf("At idx: [%u %u] D2 = %.5f\n", BS_sparse->row_indices[i], BS_sparse->col_indices[i], BS_sparse->values[i]);
+      }
+
+
+      break;
+
+      free_1D_domain(&x);
+      free_coo_matrix(D1_sparse);
+      free_coo_matrix(D2_sparse);
+      free_coo_matrix(BS_sparse);
+      free_coo_matrix(H_sparse);
+      free_coo_matrix(HI_sparse);
       
-      // unsigned int H_nnz = Nxp;
-      // unsigned int HI_nnz = Nxp;
-
-
-      // free_1D_domain(&x);
-      // free(D1_v); free(D1_row); free(D1_col);
-      // free(H_v); free(H_row); free(H_col);
-      // free(HI_v); free(HI_row); free(HI_col);
-
      }
 
      printf("|Error Rate:\n");

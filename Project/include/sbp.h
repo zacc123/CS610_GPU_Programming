@@ -1,5 +1,8 @@
 #ifndef SBP_H
 #define SBP_H
+#pragma once
+
+#include "utils.h"   // makes SparseMatrixCOO visible
 
 void create_1D_D1_operator_dense(double **D1, double **H, double **HI, unsigned int Nx, unsigned int p, float X0, float XN);
 void free_D1_ops(double **D1, double **H, double **HI);
@@ -16,6 +19,9 @@ void boundary(double *b, double *SAT, double *data, unsigned int Nxp);
 
 
 // Sparse operators
-void create_1D_D1_operator_sparse(double **D1_v, double **D1_row, double **D1_col, unsigned int *D1_nnz, double **H_v, double **H_row, double **H_col, double **HI_v, double **HI_row, double **HI_col, unsigned int Nx, unsigned int p, float X0, float XN);
-
+void create_1D_D1_operator_sparse(SparseMatrixCOO **D1, SparseMatrixCOO **H, SparseMatrixCOO **HI,
+    unsigned int Nx, unsigned int p, float X0, float XN);
+  
+void create_1D_D2_operator_sparse(SparseMatrixCOO **D2, SparseMatrixCOO **BS, 
+                                unsigned int Nx, unsigned int p, float X0, float XN);
 #endif // SBP_H

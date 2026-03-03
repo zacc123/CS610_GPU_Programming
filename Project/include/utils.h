@@ -1,6 +1,24 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+// SPARSE Arrays
+
+typedef struct {
+    unsigned int rows;
+    unsigned int cols;
+    unsigned int nnz;
+    unsigned int *row_indices;
+    unsigned int *col_indices;
+    double *values;
+} SparseMatrixCOO;
+
+/* Internal triplet used only for sorting */
+typedef struct {
+    unsigned int row;
+    unsigned int col;
+    double value;
+} COOEntry;
+
 float *create_1D_domain(float x0, float xN, unsigned int Nx);
 void free_1D_domain(float **x);
 
@@ -22,10 +40,21 @@ void matrixVecDense(double *A, double *x, double *b, unsigned int m, unsigned in
 
 void matrixMulScalarIP(double *A, double c, unsigned int m, unsigned int n);
 void matrixMulScalar(double *A, double *res, double c, unsigned int m, unsigned int n);
+void matrixMulScalarIPSparse(SparseMatrixCOO *A, double c);
 
 void matrixTranspose(double *A, double *res, unsigned int m, unsigned int n);
+SparseMatrixCOO* matrixTransposeSparse(SparseMatrixCOO *A);
 
 int conjugateGradient(double *A, double *x, double *b, unsigned int k, double atol, unsigned int max_iter);
 
 double clamp(double num, double tol);
-#endif // UTILS_H
+
+
+SparseMatrixCOO* create_coo_matrix(unsigned int m, unsigned int n, unsigned int non_zeros);
+void free_coo_matrix(SparseMatrixCOO *matrix);
+
+
+int compare_coo_entries(const void *a, const void *b);
+void sort_coo(SparseMatrixCOO *mat);
+SparseMatrixCOO *liftOutSparse(SparseMatrixCOO *A, SparseMatrixCOO *B);
+#endif //UTILS_H

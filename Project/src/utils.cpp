@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "../include/utils.h"
 /* * * * * * * * * * * *
@@ -323,4 +324,188 @@ int conjugateGradient(double *A, double *x, double *b, unsigned int k, double at
 
 double clamp(double num, double tol){
 	return (num > tol)? num : tol;
+}
+
+
+/*
+ *
+ *
+ * SPARSE ARRAYs
+ *
+ *
+ */
+
+ SparseMatrixCOO* create_coo_matrix(unsigned int m, unsigned int n, unsigned int non_zeros) {
+    SparseMatrixCOO *matrix = (SparseMatrixCOO*) malloc(sizeof(SparseMatrixCOO));
+    if (matrix == NULL) return NULL;
+
+    matrix->rows = m;
+    matrix->cols = n;
+    matrix->nnz = non_zeros;
+    matrix->row_indices = (unsigned int*) malloc(non_zeros * sizeof(unsigned int));
+    matrix->col_indices = (unsigned int*) malloc(non_zeros * sizeof(unsigned int));
+    matrix->values = (double*) malloc(non_zeros * sizeof(double));
+
+    // Error checking for malloc omitted for brevity
+    if (matrix->row_indices == NULL || matrix->col_indices == NULL || matrix->values == NULL){
+		fprintf(stderr, "Memory Allocation in Sparse Array\n");
+        exit(EXIT_FAILURE);
+	}
+    return matrix;
+}
+
+
+// Don't forget to free the allocated memory when done
+void free_coo_matrix(SparseMatrixCOO *matrix) {
+    free(matrix->row_indices);
+    free(matrix->col_indices);
+    free(matrix->values);
+    free(matrix);
+}
+
+/* Comparator: row-major then col */
+int compare_coo_entries(const void *a, const void *b)
+{
+    const COOEntry *ea = (const COOEntry*)a;
+    const COOEntry *eb = (const COOEntry*)b;
+
+    if (ea->row < eb->row) return -1;
+    if (ea->row > eb->row) return  1;
+
+    if (ea->col < eb->col) return -1;
+    if (ea->col > eb->col) return  1;
+
+    return 0;
+}
+
+/* Sort COO in-place by row then column */
+void sort_coo(SparseMatrixCOO *mat)
+{
+    if (!mat || mat->nnz == 0) return;
+
+    unsigned int nnz = mat->nnz;
+
+    /* Pack into temporary array */
+    COOEntry *entries = (COOEntry*)malloc(nnz * sizeof(COOEntry));
+    if (!entries) return;
+
+    for (unsigned int i = 0; i < nnz; ++i) {
+        entries[i].row   = mat->row_indices[i];
+        entries[i].col   = mat->col_indices[i];
+        entries[i].value = mat->values[i];
+    }
+
+    /* Sort */
+    qsort(entries, nnz, sizeof(COOEntry), compare_coo_entries);
+
+    /* Unpack back */
+    for (unsigned int i = 0; i < nnz; ++i) {
+        mat->row_indices[i] = entries[i].row;
+        mat->col_indices[i] = entries[i].col;
+        mat->values[i]      = entries[i].value;
+    }
+
+    free(entries);
+}
+
+/*
+ * Use this for E0 and En
+ *
+ */
+SparseMatrixCOO *liftOutSparse(SparseMatrixCOO *A, SparseMatrixCOO *B){
+	unsigned int row = B->row_indices[0];
+
+	// 2 pass since this will be at most 1 col of A
+	unsigned int nnz = 0;
+	double *nnzs = (double *)malloc(A->rows *sizeof(double));
+	unsigned int *rows = (unsigned int *)malloc(A->rows *sizeof(unsigned int));
+	unsigned int *cols = (unsigned int *)malloc(A->rows *sizeof(unsigned int));
+	
+
+	for (unsigned int i = 0; i < A->nnz; i++){
+		if (A->col_indices[i] == row){
+			nnzs[nnz] = A->values[i];
+			rows[nnz] = A->row_indices[i];
+			cols[nnz] = row;
+			nnz++;
+		}
+	}
+
+	SparseMatrixCOO *C = create_coo_matrix(A->rows, B->cols, nnz+1);
+	memcpy(C->row_indices, rows, (nnz+1)*sizeof(unsigned int));
+	memcpy(C->col_indices, cols, (nnz+1)*sizeof(unsigned int));
+	memcpy(C->values, nnzs, (nnz+1)*sizeof(double));
+
+	sort_coo(C);
+
+	free(nnzs); free(rows); free(cols);
+
+	return C;
+
+}
+
+void matrixMulScalarIPSparse(SparseMatrixCOO *A, double c){
+	for (unsigned int i = 0; i < A->nnz; i++){
+		A->values[i] = A->values[i] * c;
+	}
+}
+
+SparseMatrixCOO* matrixTransposeSparse(SparseMatrixCOO *A){
+	SparseMatrixCOO *AT = create_coo_matrix(A->cols, A->rows, A->nnz);
+	memcpy(AT->row_indices, A->col_indices, A->nnz*sizeof(unsigned int));
+	memcpy(AT->col_indices, A->row_indices, A->nnz*sizeof(unsigned int));
+	memcpy(AT->values, A->values, A->nnz*sizeof(double));
+	sort_coo(AT);
+	return AT;
+}
+
+SparseMatrixCOO* matrixMulSparse(SparseMatrixCOO *A, SparseMatrixCOO *B){
+	SparseMatrixCOO *BT = matrixTransposeSparse(B);
+
+	unsigned int c_row = 0;
+	unsigned int c_col = 0;
+	double c_val = 0.0;
+	unsigned int c_vals;
+	
+	unsigned int res_cap = A->nnz;
+
+	double *c_nnzs = (double *)malloc(sizeof(double) * res_cap);
+	unsigned int *c_rows = (unsigned int *)malloc(sizeof(unsigned int) * res_cap);
+	unsigned int *c_cols = (unsigned int *)malloc(sizeof(unsigned int) * res_cap);
+	
+	unsigned int A_row = A->row_indices[0];
+	unsigned int B_col = B->row_indices[0];
+
+	unsigned int a_idx = 0;
+	unsigned int b_idx = 0;
+
+	unsigned int a_idx_prev = 0;
+	unsigned int b_idx_prev = 0;
+
+	unsigned int c_idx = 0;
+
+	for (unsigned int i = 0; i < A->row; i++){
+		
+		for (unsigned int j = 0; j < B->col; j++){
+			
+			// Do the sparse dot product between a at row i and bt and row i
+
+			// START HERE
+			if (A_row == i){
+				
+				b_idx_prev = b_idx;
+				while (BT->row_indices[b_idx] == j)
+
+
+			}
+
+
+
+		}
+	}
+
+	
+
+
+	return C;
 }

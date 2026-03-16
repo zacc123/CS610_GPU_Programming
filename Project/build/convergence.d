@@ -1,4 +1,4 @@
-build/main.o : src/main.cu \
+build/convergence.o : src/convergence.cu \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/cuda_runtime.h \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/crt/host_config.h \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/builtin_types.h \
@@ -76,8 +76,7 @@ build/main.o : src/main.cu \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_lognormal.h \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_poisson.h \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_discrete2.h \
-    include/matrix_free.cuh \
-    include/convergence.cuh
+    include/matrix_free.cuh
 
 /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/cuda_runtime.h:
 
@@ -234,5 +233,3 @@ include/tests.cuh:
 /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_discrete2.h:
 
 include/matrix_free.cuh:
-
-include/convergence.cuh:

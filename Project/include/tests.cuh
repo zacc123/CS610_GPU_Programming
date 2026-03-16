@@ -1,11 +1,17 @@
 #ifndef TESTS_CUH
 #define TESTS_CUH
 
-
+/* Basic Correctness Tests for CG */
 void run_cg_test(double *vec, int k);
 void run_cg_test_cu(double *vec, int k);
 
+/* Helper for outputting results */
 void write_time_to_file(double timer[], char *filename, char* operation, bool Opt, int k, bool write, int threads);
+
+/* Run Tests on each set of kernels
+ * Each runs experiments 5 times, using CPU for validation
+ * Correctness results are output in Stdout, and timing saved to file.
+ */
 void test_BLAS_ops(int p, int k, int threadsPerBlock, bool write);
 void test_MF_ops(int k, int threadsPerBlock, bool write);
 void test_cg_dense(int k, int threadsPerBlock, bool write);

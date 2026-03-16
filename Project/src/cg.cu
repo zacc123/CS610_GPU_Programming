@@ -662,7 +662,7 @@ int conjugateGradientCuOpt(double *A, double *x, double *b, int k, double atol, 
 
 	int warps_per_block = (32 + threadsPerBlock - 1) / 32; // every warp in a block needs 32 doubles
 
-    size_t blockMem = 32 * warps_per_block * sizeof(double); // account for each 
+    size_t blockMem = 32 *  warps_per_block * sizeof(double); // account for each 
 	// printf("B4 MEM CG: b = %.4f", vectorDotProduct(b, b, k));
 	bool fail = false;
 	// Host

@@ -10,6 +10,7 @@
 #include "matrix_ops.cuh"
 #include "tests.cuh"
 #include "matrix_free.cuh"
+#include "convergence.cuh"
 
 // void run_cg_test(double *vec, int k);
 
@@ -26,13 +27,27 @@ int main(void){
     int BLAS_SIZES[6] = {1000, 2000, 4000, 8000, 16000, 32000};
     int CG_SIZES[6] = {100, 200, 400, 800, 1600, 3200};
     int threads[5] = {32, 64, 128, 256, 1024};
-    int p;
+    int p, res;
 
     p = 2;
 
     
     bool write = true;
 
+    // convergence  cpu dense
+    res = test_dense(p);
+    res = test_dense(4);
+    res = test_dense(6);
+
+    // convergence cuda dense
+    res = test_dense_cu(p);
+    res = test_dense_cu(4);
+    res = test_dense_cu(6);
+
+    // convergence cpu mf
+    res = test_mf(2);
+    res = test_mf_cu(2);
+    
     for (int i = 0; i<5; i++){
         for (int j = 0; j < 6; j++ ){
             Nx = BLAS_SIZES[j];

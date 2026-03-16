@@ -4,53 +4,55 @@
 // SPARSE Arrays
 
 typedef struct {
-    unsigned int rows;
-    unsigned int cols;
-    unsigned int nnz;
-    unsigned int *row_indices;
-    unsigned int *col_indices;
+    int rows;
+    int cols;
+    int nnz;
+    int *row_indices;
+    int *col_indices;
     double *values;
 } SparseMatrixCOO;
 
 /* Internal triplet used only for sorting */
 typedef struct {
-    unsigned int row;
-    unsigned int col;
+    int row;
+    int col;
     double value;
 } COOEntry;
 
-float *create_1D_domain(float x0, float xN, unsigned int Nx);
+float *create_1D_domain(float x0, float xN, int Nx);
 void free_1D_domain(float **x);
 
-double vectorDotProduct(double *a, double *b, unsigned int k);
-void vectorSub(double *a, double *b, double *c, unsigned int k);
-void vectorSubIP(double *a, double *b, unsigned int k);
-void vectorAdd(double *a, double *b, double *c, unsigned int k);
-void vectorAddIP(double *a, double *b, unsigned int k);
-void vectorMulScalar(double *a, double b, double *c, unsigned int k);
-void vectorMulScalarIP(double *a, double b, unsigned int k);
+double vectorDotProduct(double *a, double *b, int k);
+void vectorSub(double *a, double *b, double *c, int k);
+void vectorSubIP(double *a, double *b, int k);
+void vectorAdd(double *a, double *b, double *c, int k);
+void vectorAddIP(double *a, double *b, int k);
+void vectorMulScalar(double *a, double b, double *c, int k);
+void vectorMulScalarIP(double *a, double b, int k);
+void vectorMulEW(double *a, double *b, double *c, int k);
+double vectorSum(double *a, int k);
 
-void matrixMulDense(double *a, double *b, double *c, unsigned int m, unsigned int n, unsigned int k);
-void matrixAddDense(double *a, double *b, double *c, unsigned int m, unsigned int n);
-void matrixSubDense(double *a, double *b, double *c, unsigned int m, unsigned int n);
+void matrixMulDense(double *a, double *b, double *c, int m, int n, int k);
+void matrixAddDense(double *a, double *b, double *c, int m, int n);
+void matrixSubDense(double *a, double *b, double *c, int m, int n);
 
-void matrixAddDenseIP(double *a, double *b, unsigned int m, unsigned int n);
+void matrixAddDenseIP(double *a, double *b, int m, int n);
 
-void matrixVecDense(double *A, double *x, double *b, unsigned int m, unsigned int n);
+void matrixVecDense(double *A, double *x, double *b, int m, int n);
 
-void matrixMulScalarIP(double *A, double c, unsigned int m, unsigned int n);
-void matrixMulScalar(double *A, double *res, double c, unsigned int m, unsigned int n);
+void matrixMulScalarIP(double *A, double c, int m, int n);
+void matrixMulScalar(double *A, double *res, double c, int m, int n);
 void matrixMulScalarIPSparse(SparseMatrixCOO *A, double c);
 
-void matrixTranspose(double *A, double *res, unsigned int m, unsigned int n);
+void matrixTranspose(double *A, double *res, int m, int n);
 SparseMatrixCOO* matrixTransposeSparse(SparseMatrixCOO *A);
 
-int conjugateGradient(double *A, double *x, double *b, unsigned int k, double atol, unsigned int max_iter);
+// int conjugateGradient(double *A, double *x, double *b, int k, double atol, int max_iter);
 
 double clamp(double num, double tol);
 
 
-SparseMatrixCOO* create_coo_matrix(unsigned int m, unsigned int n, unsigned int non_zeros);
+SparseMatrixCOO* create_coo_matrix(int m, int n, int non_zeros);
 void free_coo_matrix(SparseMatrixCOO *matrix);
 
 

@@ -1,4 +1,4 @@
-build/main.o : src/main.cu \
+build/matrix_free.o : src/matrix_free.cu \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/cuda_runtime.h \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/crt/host_config.h \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/builtin_types.h \
@@ -52,31 +52,9 @@ build/main.o : src/main.cu \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/surface_indirect_functions.h \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/crt/cudacc_ext.h \
     /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/device_launch_parameters.h \
-    include/utils.h \
-    include/sbp.h \
-    include/cg.cuh \
-    include/../include/matrix_free.cuh \
-    include/matrix_ops.cuh \
-    include/tests.cuh \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_kernel.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/nv/target \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/nv/detail/__target_macros \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/nv/detail/__preprocessor \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_discrete.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_precalc.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_mrg32k3a.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_mtgp32_kernel.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_mtgp32.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_philox4x32_x.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_globals.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_uniform.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_normal.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_normal_static.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_lognormal.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_poisson.h \
-    /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_discrete2.h \
-    include/matrix_free.cuh
+    src/../include/sbp.h \
+    src/../include/utils.h \
+    src/../include/matrix_free.cuh
 
 /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/cuda_runtime.h:
 
@@ -184,52 +162,8 @@ build/main.o : src/main.cu \
 
 /packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/device_launch_parameters.h:
 
-include/utils.h:
+src/../include/sbp.h:
 
-include/sbp.h:
+src/../include/utils.h:
 
-include/cg.cuh:
-
-include/../include/matrix_free.cuh:
-
-include/matrix_ops.cuh:
-
-include/tests.cuh:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_kernel.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/nv/target:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/nv/detail/__target_macros:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/nv/detail/__preprocessor:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_discrete.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_precalc.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_mrg32k3a.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_mtgp32_kernel.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_mtgp32.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_philox4x32_x.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_globals.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_uniform.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_normal.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_normal_static.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_lognormal.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_poisson.h:
-
-/packages/cuda/12.8.1/bin/../targets/x86_64-linux/include/curand_discrete2.h:
-
-include/matrix_free.cuh:
+src/../include/matrix_free.cuh:
